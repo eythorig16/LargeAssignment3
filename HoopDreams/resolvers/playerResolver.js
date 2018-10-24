@@ -18,7 +18,9 @@ module.exports = {
             return newPlayer;
         },
         updatePlayer: (parent, args) => {
-            const update
+            const updatePlayer = db.players.find(p => p.id === args.id);
+            updatePlayer.name = args.name;
+            return updatePlayer;
         }
         
     }

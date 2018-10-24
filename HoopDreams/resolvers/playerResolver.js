@@ -1,9 +1,10 @@
-const db = require('../data/db');
+const { Player } = require('../data/db');
+
 
 module.exports = {
     queries: {
         allPlayers: () => {
-            return db.players;
+            return Player.find({});
         },
         player: (parent, args) => {
             return allPlayers.find(p => p.id === args.id);
@@ -15,15 +16,15 @@ module.exports = {
                 id: args.input.id,
                 name: args.input.name
             };
-            db.players.push(newPlayer);
+            Player.players.push(newPlayer);
             return newPlayer;
         },
         updatePlayer: (parent, args) => {
-            const uPlayer = db.players.find(p => p.id === args.id);
+            const uPlayer = Player.players.find(p => p.id === args.id);
             uPlayer.name = args.name;
             return uPlayer;
         },
-        deletePlayer: (parent, args) => {
+        removePlayer: (parent, args) => {
             const dPlayer = db.players.find(p => p.id === args.id);
             const index = db.players.indexOf(dPlayer);
 

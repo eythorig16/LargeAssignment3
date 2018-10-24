@@ -1,3 +1,5 @@
+const { BasketballField } = require('../data/db');
+
 module.exports = {
     queries: {
         allBasketballFields: () => {

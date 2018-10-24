@@ -18,10 +18,17 @@ module.exports = {
             return newPlayer;
         },
         updatePlayer: (parent, args) => {
-            const updatePlayer = db.players.find(p => p.id === args.id);
-            updatePlayer.name = args.name;
-            return updatePlayer;
+            const uPlayer = db.players.find(p => p.id === args.id);
+            uPlayer.name = args.name;
+            return uPlayer;
+        },
+        deletePlayer: (parent, args) => {
+            const dPlayer = db.players.find(p => p.id === args.id);
+            const index = db.players.indexOf(player);
+
+            db.players.splice(index, 1);
+
+            return true;
         }
-        
     }
 };

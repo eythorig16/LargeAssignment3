@@ -3,7 +3,7 @@ const { BasketballField } = require('../data/db');
 module.exports = {
     queries: {
         allBasketballFields: () => {
-            return db.basketballFields;
+            return BasketballField.find({});
         },
         basketballField: (parent, args) => {
             return allBasketballFields.find(p => p.id === args.id);
@@ -18,19 +18,19 @@ module.exports = {
                 yearOfCreation: args.input.yearOfCreation,
                 status: args.input.status
             };
-            db.basketballFields.push(newBasketballField);
+            BasketballField.create(newBasketballField);
             return newBasketballField;
         },
         updateBasketballField: (parent, args) => {
-            const uBasketballField = db.basketballFields.find(p => p.id === args.id);
+            const uBasketballField = BasketballField.find(p => p.id === args.id);
             uBasketballField.name = args.name;
             return uBasketballField;
         },
         deleteBasketballField: (parent, args) => {
-            const dBasketballField = db.basketballFields.find(p => p.id === args.id);
-            const index = db.basketballFields.indexOf(dBasketballField);
+            const dBasketballField = BasketballField.find(p => p.id === args.id);
+            const index = BasketballField.indexOf(dBasketballField);
 
-            db.basketballFields.splice(index, 1);
+            BasketballField.splice(index, 1);
 
             return true;
         }

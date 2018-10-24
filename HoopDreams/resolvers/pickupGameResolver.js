@@ -18,19 +18,19 @@ module.exports = {
                 location: args.input.location,
                 host: args.input.host
             };
-            db.pickupGames.push(newPickupGame);
+            PickupGame.create(newPickupGame);
             return newPickupGame;
         },
         updatePickupGame: (parent, args) => {
-            const uPickupGame = db.pickupGames.find(p => p.id === args.id);
+            const uPickupGame = PickupGame.find(p => p.id === args.id);
             uPickupGame.end = args.end;
             return uPickupGame;
         },
         deletePickupGame: (parent, args) => {
-            const dPickupGame = db.pickupGames.find(p => p.id === args.id);
-            const index = db.pickupGames.indexOf(dPickupGame);
+            const dPickupGame = PickupGame.find(p => p.id === args.id);
+            const index = PickupGame.indexOf(dPickupGame);
 
-            db.pickupGames.splice(index, 1);
+            pickupGames.splice(index, 1);
 
             return true;
         }

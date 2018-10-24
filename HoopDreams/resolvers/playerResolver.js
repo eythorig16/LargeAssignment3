@@ -16,19 +16,19 @@ module.exports = {
                 id: args.input.id,
                 name: args.input.name
             };
-            Player.players.push(newPlayer);
+            Player.create(newPlayer);
             return newPlayer;
         },
         updatePlayer: (parent, args) => {
-            const uPlayer = Player.players.find(p => p.id === args.id);
+            const uPlayer = Player.find(p => p.id === args.id);
             uPlayer.name = args.name;
             return uPlayer;
         },
         removePlayer: (parent, args) => {
-            const dPlayer = db.players.find(p => p.id === args.id);
-            const index = db.players.indexOf(dPlayer);
+            const dPlayer = Player.find(p => p.id === args.id);
+            const index = Player.indexOf(dPlayer);
 
-            db.players.splice(index, 1);
+            Player.splice(index, 1);
 
             return true;
         }

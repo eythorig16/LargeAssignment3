@@ -10,9 +10,8 @@ module.exports = {
     mutations: {
         createPlayer: (parent, args) => {
             const newPlayer = {
-                id: 2,
-                name: args.input.name,
-                description: args.input.description
+                id: args.input.id,
+                name: args.input.name
             };
             db.players.push(newPlayer);
             return newPlayer;
@@ -24,7 +23,7 @@ module.exports = {
         },
         deletePlayer: (parent, args) => {
             const dPlayer = db.players.find(p => p.id === args.id);
-            const index = db.players.indexOf(player);
+            const index = db.players.indexOf(dPlayer);
 
             db.players.splice(index, 1);
 

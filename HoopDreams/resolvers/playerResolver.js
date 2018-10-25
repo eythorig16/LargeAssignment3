@@ -1,6 +1,3 @@
-const { Player } = require('../data/db');
-
-
 module.exports = {
     queries: {
         allPlayers: (root, args, context) => {
@@ -10,32 +7,31 @@ module.exports = {
                 });
             });
         },
-        player: (parent, args) => {
-            return Player.findById(args.id);
+        player: (parent, args, context) => {
+            return context.db.Player.findById(args.id);
         }
     },
     mutations: {
-        createPlayer: (parent, args) => {
+        createPlayer: (parent, args, context) => {
             const { name } = args.input;
 
-            var player = new Player();
+            var player = new context.db.Player();
             player.name = name;
 
-            Player.create(player);
+            context.db.Player.create(player);
             return player;
         },
 
 
-        updatePlayer: (parent, args) => {
-            const uPlayer = Player.find(p => p.id === args.id);
+        updatePlayer: (parent, args, context) => {
+            const uPlayer = context.db.Player.find(p => p.id === args.id);
             uPlayer.name = args.name;
             return uPlayer;
         },
         removePlayer: (parent, args) => {
-            const dPlayer = Player.find(p => p.id === args.id);
-            const index = Player.indexOf(dPlayer);
+            const dPlayer = context.db.Player.find(p => p.id === args.id);
+            const index = context.db.Player.indexOf(dPlayer);
 
-            Player.splice(index, 1);
 
             return true;
         }

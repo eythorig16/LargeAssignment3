@@ -4,6 +4,8 @@ const { Player } = require('../data/db');
 module.exports = {
     queries: {
         allPlayers: () => {
+            console.log(Player.find({}));
+
             return Player.find({});
         },
         player: (parent, args) => {
@@ -12,12 +14,14 @@ module.exports = {
     },
     mutations: {
         createPlayer: (parent, args) => {
-            const newPlayer = {
-                id: args.input.id,
-                name: args.input.name
-            };
-            Player.create(newPlayer);
-            return newPlayer;
+            console.log("HERE");
+            const { name } = args.input;
+
+            var player = new Player();
+            player.name = name;
+
+            Player.create(player);
+            return player;
         },
         updatePlayer: (parent, args) => {
             const uPlayer = Player.find(p => p.id === args.id);

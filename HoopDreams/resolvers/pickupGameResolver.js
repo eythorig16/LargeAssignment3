@@ -1,8 +1,9 @@
-const { PickupGame } = require('../data/db');
+const { PickupGame, Player, BasketballField } = require('../data/db');
 
 module.exports = {
     queries: {
         allPickupGames: () => {
+            console.log("wtf")
             return PickupGame.find({});
         },
         pickupGame: (parent, args) => {
@@ -12,15 +13,27 @@ module.exports = {
     },
     mutations: {
         createPickupGame: (parent, args) => {
-            const newPickupGame = {
-                id: args.input.id,
-                start: args.input.start,
-                end: args.input.end,
-                location: args.input.location,
-                host: args.input.host
-            };
-            PickupGame.create(newPickupGame);
-            return newPickupGame;
+            console.log("HERE");
+            const { start, end, basketballFieldId, hostId } = args.input;
+            const host = Player.findOne({ id: hostId });
+            const basketballField = BasketballField.findOne({ id: basketballFieldId });
+
+            var pickupGame = new PickupGame();
+            pickupGame.id = 1;
+            pickupGame.start = start;
+            pickupGame.end = end;
+            pickupGame.location = basketballFieldId;
+            pickupGame.host = host;
+
+            console.log(pickupGame);
+
+            PickupGame.create(pickupGame, (err, pickupGame) => {
+                if (err) {
+                    throw new Error(err);
+                }
+                return pickupGame;
+            });
+
         },
         updatePickupGame: (parent, args) => {
             const { id, end } = args;

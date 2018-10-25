@@ -28,12 +28,15 @@ module.exports = {
             uPlayer.name = args.name;
             return uPlayer;
         },
-        removePlayer: (parent, args) => {
-            const dPlayer = context.db.Player.find(p => p.id === args.id);
-            const index = context.db.Player.indexOf(dPlayer);
-
-
-            return true;
+        removePlayer: (parent, args, context) => {
+            return new Promise((resolve, reject) => {
+                context.db.Player.findByIdAndDelete(args.id, (err, rem) => {
+                    if(err) {
+                        reject(err);
+                    } 
+                    resolve(true);
+                });
+            })
         }
     }
 };

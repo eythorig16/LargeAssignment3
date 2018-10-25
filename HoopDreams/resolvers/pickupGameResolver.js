@@ -6,7 +6,8 @@ module.exports = {
             return PickupGame.find({});
         },
         pickupGame: (parent, args) => {
-            return allPickupGames.find(p => p.id === args.id);
+            const { id } = args;
+            return PickupGame.findOne({ id: id });
         }
     },
     mutations: {
@@ -22,16 +23,21 @@ module.exports = {
             return newPickupGame;
         },
         updatePickupGame: (parent, args) => {
-            const uPickupGame = PickupGame.find(p => p.id === args.id);
-            uPickupGame.end = args.end;
+            const { id, end } = args;
+            const uPickupGame = PickupGame.findOne({ id: id });
+            uPickupGame.end = end;
             return uPickupGame;
         },
         deletePickupGame: (parent, args) => {
-            const dPickupGame = PickupGame.find(p => p.id === args.id);
-            const index = PickupGame.indexOf(dPickupGame);
+            const { id } = args;
+            const dPickupGame = PickupGame.findOne({ id: id });
+            // check if pickup game exists
+            if (dPickupGame == null) {
+                // pickup game doesnt exist
+                return false;
+            }
 
-            pickupGames.splice(index, 1);
-
+            dPickupGame.remove();
             return true;
         }
     }

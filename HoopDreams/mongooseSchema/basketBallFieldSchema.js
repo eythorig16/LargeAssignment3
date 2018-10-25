@@ -4,6 +4,6 @@ module.exports = new Schema({
     id: { type: String, required: true },
     name: { type: String, required: true  },
     capacity: { type: String, required: true  },
-    yearOfCreation: { type: String, required: true},
-    status: { type: String, required: true}
+    yearOfCreation: { type: String, required: true}
+    //status: { type: String, required: true}
 });

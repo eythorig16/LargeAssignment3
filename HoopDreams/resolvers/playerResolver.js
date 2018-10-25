@@ -3,8 +3,12 @@ const { Player } = require('../data/db');
 
 module.exports = {
     queries: {
-        allPlayers: () => {
-            return Player.find({});
+        allPlayers: (root, args, context) => {
+            return new Promise((resolve, reject) => {
+                context.db.Player.find({}, (err, data) => {
+                    resolve(data);
+                });
+            });
         },
         player: (parent, args) => {
             return allPlayers.find(p => p.id === args.id);

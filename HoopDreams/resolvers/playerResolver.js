@@ -4,9 +4,13 @@ const { Player } = require('../data/db');
 module.exports = {
     queries: {
         allPlayers: () => {
-            console.log(Player.find({}));
+            Player.find({}, (err, players) => {
+                if (err) {
+                    throw new Error(err);
+                }
+                return players;
+            })
 
-            return Player.find({});
         },
         player: (parent, args) => {
             return allPlayers.find(p => p.id === args.id);
@@ -23,6 +27,8 @@ module.exports = {
             Player.create(player);
             return player;
         },
+
+
         updatePlayer: (parent, args) => {
             const uPlayer = Player.find(p => p.id === args.id);
             uPlayer.name = args.name;

@@ -1,10 +1,21 @@
 var request = require('request');
+const errorr = require('../errors');
 
-request('https://basketball-fields.herokuapp.com/api/basketball-fields', function (error, response, body) {
-    if (error != null) {
-        console.log('error:', error); // error
+module.exports = {
+
+    getBasketballFields: () => {
+        return new Promise((resolve, reject) => 
+        {        
+            request('https://basketball-fields.herokuapp.com/api/basketball-fields', function (error, response, body) {
+                if (error != null) {
+                    return reject(error);
+                }
+                try {
+                    resolve(JSON.parse(body));
+                } catch(err) {
+                    reject(new errorr.NotFoundError);
+                }
+            })
+        })
     }
-    else {
-        console.log('body:', body); // basketballfields
-    }
-});
+}

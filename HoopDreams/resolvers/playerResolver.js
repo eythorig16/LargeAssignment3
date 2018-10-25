@@ -7,7 +7,7 @@ module.exports = {
             return Player.find({});
         },
         player: (parent, args) => {
-            return allPlayers.find(p => p.id === args.id);
+            return Player.findOne({id : args.id});
         }
     },
     mutations: {

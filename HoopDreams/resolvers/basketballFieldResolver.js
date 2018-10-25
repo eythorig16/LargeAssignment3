@@ -8,7 +8,8 @@ module.exports = {
             return fields;
         },
         basketballField: (parent, args) => {
-            return allBasketballFields.find(p => p.id === args.id);
+            const { id } = args;
+            return BasketballField.findOne({ id: id });
         }
     }
 };

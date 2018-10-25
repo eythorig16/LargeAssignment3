@@ -23,8 +23,9 @@ module.exports = {
             return newPickupGame;
         },
         updatePickupGame: (parent, args) => {
-            const uPickupGame = PickupGame.find(p => p.id === args.id);
-            uPickupGame.end = args.end;
+            const { id, end } = args;
+            const uPickupGame = PickupGame.findOne({ id: id });
+            uPickupGame.end = end;
             return uPickupGame;
         },
         deletePickupGame: (parent, args) => {

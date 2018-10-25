@@ -11,7 +11,7 @@ module.exports = {
             });
         },
         player: (parent, args) => {
-            return allPlayers.find(p => p.id === args.id);
+            return Player.findById(args.id);
         }
     },
     mutations: {

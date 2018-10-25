@@ -6,7 +6,8 @@ module.exports = {
             return PickupGame.find({});
         },
         pickupGame: (parent, args) => {
-            return allPickupGames.find(p => p.id === args.id);
+            const { id } = args;
+            return PickupGame.findOne({ id: id });
         }
     },
     mutations: {

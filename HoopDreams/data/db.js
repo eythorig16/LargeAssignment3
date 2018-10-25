@@ -7,6 +7,8 @@ const connection = mongoose.createConnection('mongodb://ofiprump:prump1@ds042677
     useNewUrlParser: true
 });
 
+mongoose.set('useFindAndModify', false)
+
 module.exports = {
     PickupGame: connection.model('PickupGame', pickupGameSchema),
     Player: connection.model('Player', playerSchema),

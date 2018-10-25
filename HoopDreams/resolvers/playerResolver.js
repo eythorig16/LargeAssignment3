@@ -24,9 +24,19 @@ module.exports = {
 
 
         updatePlayer: (parent, args, context) => {
-            const uPlayer = context.db.Player.find(p => p.id === args.id);
-            uPlayer.name = args.name;
-            return uPlayer;
+            
+            return new Promise((resolve, reject) => {
+                const uPlayer = context.db.Player.findOneAndUpdate(
+                    {_id:args.id},
+                    {
+                        $set: {
+                            name: args.name
+                        }
+                    },
+                    {new: true}
+                    );
+                    resolve(uPlayer);
+            })
         },
         removePlayer: (parent, args) => {
             const dPlayer = context.db.Player.find(p => p.id === args.id);

@@ -29,11 +29,15 @@ module.exports = {
             return uPickupGame;
         },
         deletePickupGame: (parent, args) => {
-            const dPickupGame = PickupGame.find(p => p.id === args.id);
-            const index = PickupGame.indexOf(dPickupGame);
+            const { id } = args;
+            const dPickupGame = PickupGame.findOne({ id: id });
+            // check if pickup game exists
+            if (dPickupGame == null) {
+                // pickup game doesnt exist
+                return false;
+            }
 
-            pickupGames.splice(index, 1);
-
+            dPickupGame.remove();
             return true;
         }
     }

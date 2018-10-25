@@ -4,7 +4,6 @@ module.exports = {
     queries: {
         allBasketballFields: async () => {
             const fields = BasketballField.find({});
-            console.log(fields);
             return fields;
         },
         basketballField: (parent, args) => {

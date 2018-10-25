@@ -3,30 +3,22 @@ const { Player } = require('../data/db');
 
 module.exports = {
     queries: {
-        allPlayers: (root, args, context) => {
-            return new Promise((resolve, reject) => {
-                context.db.Player.find({}, (err, data) => {
-                    resolve(data);
-                });
-            });
-                // Player.find({});
+        allPlayers: () => {
+            return Player.find({});
         },
         player: (parent, args) => {
             return Player.findOne({id : args.id});
         }
     },
     mutations: {
+        createPlayer: (parent, args) => {
+            const { name } = args.input;
 
-        createPlayer: (root, args, context) => {
-            return new Promise((resolve, rejext) => {
-                context.db.Player.create({
-                    name: args.input.name },
-                    (err, newPlayer) => {
-                        console.log(args.input.name);
-                        resolve(newPlayer)
-                    }
-                )
-            });
+            var player = new Player();
+            player.name = name;
+
+            Player.create(player);
+            return player;
         },
 
 

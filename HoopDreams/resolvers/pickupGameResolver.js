@@ -16,7 +16,6 @@ module.exports = {
     },
     mutations: {
         createPickupGame: (parent, args, context) => {
-            console.log("HERE");
             const { start, end, basketballFieldId, hostId } = args.input;
 
             var pickupGame = new context.db.PickupGame();
@@ -28,18 +27,21 @@ module.exports = {
             context.db.PickupGame.create(pickupGame);
             return pickupGame;
         },
-        deletePickupGame: (parent, args) => {
+        removePickupGame: (parent, args, context) => {
+            console.log("here");
             const { id } = args;
-            const dPickupGame = PickupGame.findById(id);
+            console.log(id);
 
-            // check if pickup game exists
-            if (dPickupGame == null) {
-                // pickup game doesnt exist
-                return false;
-            }
+            return new Promise((resolve, reject) => {
+                context.db.PickupGame.findByIdAndDelete(id, (err, rem) => {
+                    if (err) {
+                        reject(err);
+                    }
 
-            dPickupGame.remove();
-            return true;
+                    resolve(true);
+                });
+            })
+
         }
     }
 };

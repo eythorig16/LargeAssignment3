@@ -2,12 +2,16 @@ const { PickupGame, Player, BasketballField } = require('../data/db');
 
 module.exports = {
     queries: {
-        allPickupGames: () => {
-            return PickupGame.find({});
+        allPickupGames: (root, args, context) => {
+            return new Promise((resolve, reject) => {
+                context.db.PickupGame.find({}, (err, data) => {
+                    resolve(data);
+                });
+            });
         },
         pickupGame: (parent, args) => {
             const { id } = args;
-            return PickupGame.findOne({ id: id });
+            return PickupGame.findById(id);
         }
     },
     mutations: {

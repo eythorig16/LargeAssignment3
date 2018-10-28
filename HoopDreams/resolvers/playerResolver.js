@@ -8,8 +8,9 @@ module.exports = {
             });
         },
         player: (parent, args, context) => {
+            const { id } = args;
             return new Promise((resolve, reject) => {
-                context.db.Player.findById(args.id, (err, p) => {
+                context.db.Player.findById(id, (err, p) => {
                     if(p == null || err) {
                         reject(new context.error.NotFoundError());
                     }
@@ -44,6 +45,9 @@ module.exports = {
                     },
                     { new: true }
                 );
+                if(uPlayer == null) {
+                    reject(new context.error.NotFoundError());
+                }
                 resolve(uPlayer);
             })
         },
@@ -51,7 +55,7 @@ module.exports = {
             return new Promise((resolve, reject) => {
                 context.db.Player.findByIdAndDelete(args.id, (err, rem) => {
                     if (err) {
-                        resolve(false);
+                        resolve(new context.error.NotFoundError());
                     }
                     resolve(true);
                 });

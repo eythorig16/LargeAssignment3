@@ -11,9 +11,10 @@ module.exports = {
             });
         },
         pickupGame: (parent, args, context) => {
+            const { id } = args;
             return new Promise((resolve, reject) => {
-                context.db.PickupGame.findById(args.id, (err, game) => {
-                    if (game == null || err) {
+                context.db.PickupGame.findById(id, (err, game) => {
+                    if(game == null || err) {
                         reject(new context.error.NotFoundError());
                     }
                     else {

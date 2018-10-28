@@ -19,13 +19,14 @@ module.exports = {
         name: "Moment",
         description: "Custom scalar to schow icelandic locale",
         parsevalue: value => {
-          return value;
+            return value;
         },
         parseliteral: value => {
-          return value;
+            return value;
         },
         serialize: value => {
-          return value = moment(value).format("llll").locale("is");
+            moment.locale("is");
+            return (value = moment(value).format("llll"));
         }
     })
 }

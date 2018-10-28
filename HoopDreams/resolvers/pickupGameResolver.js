@@ -12,13 +12,13 @@ module.exports = {
         pickupGame: (parent, args, context) => {
             return new Promise((resolve, reject) => {
                 context.db.PickupGame.findById(args.id, (err, game) => {
-                    if(game == null || err) {
+                    if (game == null || err) {
                         reject(new context.error.NotFoundError());
                     }
                     else {
                         resolve(game);
                     }
-                });        
+                });
             })
         }
     },
@@ -78,27 +78,27 @@ module.exports = {
             const { playerId, pickupGameId } = args.input;
 
             return new Promise((resolve, reject) => {
-                context.db.PickupGame.findById(args.input.pickupGameId, (err, game) => {
+                context.db.PickupGame.findById(args.input.pickupGameId, (err, pickupGame) => {
                     if (err) {
-                        reject(new NotFoundError());
+                        reject(new context.error.NotFoundError());
                     } else if (game == null) {
-                        reject(new NotFoundError());
-                    } else if (new Date(game.end).getTime() < new Date().getTime()) {
-                        reject(new PickupGameAlreadyPassedError());
+                        reject(new context.error.NotFoundError());
+                    } else if (new Date() > pickupGame.end) {
+                        reject(new context.error.PickupGameAlreadyPassedError());
                     }
 
-                    var index = game.registeredPlayers.indexOf(playerId);
+                    var index = pickupGame.registeredPlayers.indexOf(playerId);
 
                     if (index > -1) {
-                        game.registeredPlayers.splice(index, 1);
+                        pickupGame.registeredPlayers.splice(index, 1);
                     }
 
-                    PickupGame.findByIdAndUpdate(args.input.pickupGameId,
-                        { registeredPlayers: game.registeredPlayers }, (err, game_2) => {
+                    PickupGame.findByIdAndUpdate(pickupGameId,
+                        { registeredPlayers: pickupGame.registeredPlayers }, (err, pickupGame_) => {
                             if (err) {
                                 reject(new BadRequest());
                             }
-                            resolve(game_2);
+                            resolve(pickupGame_);
                         });
                 });
             });

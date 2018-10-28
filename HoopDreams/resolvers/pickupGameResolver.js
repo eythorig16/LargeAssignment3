@@ -3,7 +3,6 @@ const { PickupGame, Player, BasketballField } = require('../data/db');
 module.exports = {
     queries: {
         allPickupGames: () => {
-            console.log("wtf")
             return PickupGame.find({});
         },
         pickupGame: (parent, args) => {

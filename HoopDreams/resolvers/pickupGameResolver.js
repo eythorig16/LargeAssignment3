@@ -1,5 +1,3 @@
-const { PickupGame, Player, BasketballField } = require('../data/db');
-
 module.exports = {
     queries: {
         allPickupGames: (root, args, context) => {
@@ -47,6 +45,31 @@ module.exports = {
 
                     resolve(true);
                 });
+            })
+        },
+        addPlayerToPickupGame: (parent, args, context) => {
+            const { playerId, pickupGameId } = args.input;
+
+            return new Promise((resolve, reject) => {
+                context.db.PickupGame.findById(pickupGameId, (err, pickupGame) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    if (new Date() > pickupGame.end) {
+                        reject(new context.error.PickupGameAlreadyPassedError());
+                    }
+                    else{      
+                        pickupGame.registeredPlayers.push(playerId);
+                        context.db.PickupGame.findByIdAndUpdate(pickupGameId,
+                            { registeredPlayers: pickupGame.registeredPlayers }, (err, pickupGame) => {
+                                if (err) {
+                                    reject(err);
+                                }
+
+                                resolve(pickupGame);
+                            });
+                    }
+                })
             })
         },
         addPlayerToPickupGame: (parent, args, context) => {

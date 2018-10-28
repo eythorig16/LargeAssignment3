@@ -28,15 +28,10 @@ module.exports = {
             context.db.PickupGame.create(pickupGame);
             return pickupGame;
         },
-        updatePickupGame: (parent, args) => {
-            const { id, end } = args;
-            const uPickupGame = PickupGame.findOne({ id: id });
-            uPickupGame.end = end;
-            return uPickupGame;
-        },
         deletePickupGame: (parent, args) => {
             const { id } = args;
-            const dPickupGame = PickupGame.findOne({ id: id });
+            const dPickupGame = PickupGame.findById(id);
+
             // check if pickup game exists
             if (dPickupGame == null) {
                 // pickup game doesnt exist

@@ -1,3 +1,5 @@
+const service = require('../services/basketballFieldService');
+
 module.exports = {
     queries: {
         allPickupGames: (root, args, context) => {
@@ -11,7 +13,7 @@ module.exports = {
             const { id } = args;
             return new Promise((resolve, reject) => {
                 context.db.PickupGame.findById(id, (err, game) => {
-                    if(game == null || err) {
+                    if (game == null || err) {
                         reject(new context.error.NotFoundError());
                     }
                     else {
@@ -24,6 +26,12 @@ module.exports = {
     mutations: {
         createPickupGame: (parent, args, context) => {
             const { start, end, basketballFieldId, hostId } = args.input;
+            var field = service.getBasketBallFieldById(basketballFieldId);
+            var host = context.db.Player.findById(hostId);
+
+            if (field == null || host == null) {
+                return new context.error.NotFoundError();
+            }
 
             const game = service.getBasketBallFieldById(basketballFieldId);
             if (game.status == "OPEN") {
@@ -45,9 +53,10 @@ module.exports = {
             const { id } = args;
 
             return new Promise((resolve, reject) => {
+
                 context.db.PickupGame.findByIdAndDelete(id, (err, rem) => {
                     if (err) {
-                        resolve(false);
+                        reject(new context.error.NotFoundError());
                     }
 
                     resolve(true);
@@ -65,7 +74,7 @@ module.exports = {
                     if (new Date() > pickupGame.end) {
                         reject(new context.error.PickupGameAlreadyPassedError());
                     }
-                    else{      
+                    else {
                         pickupGame.registeredPlayers.push(playerId);
                         context.db.PickupGame.findByIdAndUpdate(pickupGameId,
                             { registeredPlayers: pickupGame.registeredPlayers }, (err, pickupGame) => {
@@ -99,10 +108,10 @@ module.exports = {
                         pickupGame.registeredPlayers.splice(index, 1);
                     }
 
-                    PickupGame.findByIdAndUpdate(pickupGameId,
+                    context.db.PickupGame.findByIdAndUpdate(pickupGameId,
                         { registeredPlayers: pickupGame.registeredPlayers }, (err, pickupGame_) => {
                             if (err) {
-                                reject(new BadRequest());
+                                reject(new context.error.BadRequest());
                             }
                             resolve(pickupGame_);
                         });

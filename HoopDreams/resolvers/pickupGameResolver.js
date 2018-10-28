@@ -51,7 +51,7 @@ module.exports = {
                     if (new Date() > pickupGame.end) {
                         reject(new context.error.PickupGameAlreadyPassedError());
                     }
-                    else{      
+                    else {
                         pickupGame.registeredPlayers.push(playerId);
                         context.db.PickupGame.findByIdAndUpdate(pickupGameId,
                             { registeredPlayers: pickupGame.registeredPlayers }, (err, pickupGame) => {

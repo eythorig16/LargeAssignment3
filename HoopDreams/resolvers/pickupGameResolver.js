@@ -1,4 +1,5 @@
 const { PickupGame, Player, BasketballField } = require('../data/db');
+const service = require("../services/basketballFieldService");
 
 module.exports = {
     queries: {
@@ -18,14 +19,21 @@ module.exports = {
         createPickupGame: (parent, args, context) => {
             const { start, end, basketballFieldId, hostId } = args.input;
 
-            var pickupGame = new context.db.PickupGame();
-            pickupGame.start = start;
-            pickupGame.end = end;
-            pickupGame.location = basketballFieldId;
-            pickupGame.host = hostId;
+            const game = service.getBasketBallFieldById(basketballFieldId);
+            if (game.status == "OPEN") {
 
-            context.db.PickupGame.create(pickupGame);
-            return pickupGame;
+                var pickupGame = new context.db.PickupGame();
+                pickupGame.start = start;
+                pickupGame.end = end;
+                pickupGame.location = basketballFieldId;
+                pickupGame.host = hostId;
+
+                context.db.PickupGame.create(pickupGame);
+                return pickupGame;
+            }
+            else {
+                throw new context.error.BasketballFieldClosedError();
+            }
         },
         removePickupGame: (parent, args, context) => {
             const { id } = args;

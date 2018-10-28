@@ -8,7 +8,16 @@ module.exports = {
             });
         },
         player: (parent, args, context) => {
-            return context.db.Player.findById(args.id);
+            return new Promise((resolve, reject) => {
+                context.db.Player.findById(args.id, (err, p) => {
+                    if(p == null || err) {
+                        reject(new context.error.NotFoundError());
+                    }
+                    else {
+                        resolve(p);
+                    }
+                });
+            })
         }
     },
     mutations: {

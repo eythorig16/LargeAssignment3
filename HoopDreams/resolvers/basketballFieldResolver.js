@@ -1,14 +1,14 @@
 const { BasketballField } = require('../data/db');
+const service = require('../services/basketballFieldService');
 
 module.exports = {
     queries: {
         allBasketballFields: async () => {
-            const fields = BasketballField.find({});
-            return fields;
+            return service.getBasketballFields();
         },
         basketballField: (parent, args) => {
             const { id } = args;
-            return BasketballField.findOne({ id: id });
+            return service.getBasketBallFieldById(id);
         }
     }
 };

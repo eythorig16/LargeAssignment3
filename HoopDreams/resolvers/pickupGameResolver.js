@@ -70,6 +70,35 @@ module.exports = {
                 })
             })
 
+        },
+        removePlayerFromPickupGame: (parent, args) => {
+            const { playerId, pickupGameId } = args.input;
+
+            return new Promise((resolve, reject) => {
+                context.db.PickupGame.findById(args.input.pickupGameId, (err, game) => {
+                    if (err) {
+                        reject(new NotFoundError());
+                    } else if (game == null) {
+                        reject(new NotFoundError());
+                    } else if (new Date(game.end).getTime() < new Date().getTime()) {
+                        reject(new PickupGameAlreadyPassedError());
+                    }
+
+                    var index = game.registeredPlayers.indexOf(playerId);
+
+                    if (index > -1) {
+                        game.registeredPlayers.splice(index, 1);
+                    }
+
+                    PickupGame.findByIdAndUpdate(args.input.pickupGameId,
+                        { registeredPlayers: game.registeredPlayers }, (err, game_2) => {
+                            if (err) {
+                                reject(new BadRequest());
+                            }
+                            resolve(game_2);
+                        });
+                });
+            });
         }
     }
 };

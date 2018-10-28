@@ -1,4 +1,3 @@
-const { PickupGame, Player, BasketballField } = require('../data/db');
 const service = require('../services/basketballFieldService');
 
 module.exports = {
@@ -34,14 +33,21 @@ module.exports = {
                 return new context.error.NotFoundError();
             }
 
-            var pickupGame = new context.db.PickupGame();
-            pickupGame.start = start;
-            pickupGame.end = end;
-            pickupGame.location = basketballFieldId;
-            pickupGame.host = hostId;
+            const game = service.getBasketBallFieldById(basketballFieldId);
+            if (game.status == "OPEN") {
 
-            context.db.PickupGame.create(pickupGame);
-            return pickupGame;
+                var pickupGame = new context.db.PickupGame();
+                pickupGame.start = start;
+                pickupGame.end = end;
+                pickupGame.location = basketballFieldId;
+                pickupGame.host = hostId;
+
+                context.db.PickupGame.create(pickupGame);
+                return pickupGame;
+            }
+            else {
+                throw new context.error.BasketballFieldClosedError();
+            }
         },
         removePickupGame: (parent, args, context) => {
             const { id } = args;
@@ -81,6 +87,31 @@ module.exports = {
                     }
                 })
             })
+        },
+        addPlayerToPickupGame: (parent, args, context) => {
+            const { playerId, pickupGameId } = args.input;
+
+            return new Promise((resolve, reject) => {
+                context.db.PickupGame.findById(pickupGameId, (err, pickupGame) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    if (new Date() > pickupGame.end) {
+                        reject(new context.error.PickupGameAlreadyPassedError());
+                    }
+                    else {
+                        pickupGame.registeredPlayers.push(playerId);
+                        context.db.PickupGame.findByIdAndUpdate(pickupGameId,
+                            { registeredPlayers: pickupGame.registeredPlayers }, (err, pickupGame) => {
+                                if (err) {
+                                    reject(err);
+                                }
+
+                                resolve(pickupGame);
+                            });
+                    }
+                })
+            })
 
         },
         removePlayerFromPickupGame: (parent, args) => {
@@ -93,7 +124,7 @@ module.exports = {
                     } else if (game == null) {
                         reject(new context.error.NotFoundError());
                     } else if (new Date() > pickupGame.end) {
-                        reject(new context.error.PickupGameAlreadyPassedError());   
+                        reject(new context.error.PickupGameAlreadyPassedError());
                     }
 
                     var index = pickupGame.registeredPlayers.indexOf(playerId);

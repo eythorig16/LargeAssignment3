@@ -15,28 +15,18 @@ module.exports = {
         }
     },
     mutations: {
-        createPickupGame: (parent, args) => {
+        createPickupGame: (parent, args, context) => {
             console.log("HERE");
             const { start, end, basketballFieldId, hostId } = args.input;
-            const host = Player.findOne({ id: hostId });
-            const basketballField = BasketballField.findOne({ id: basketballFieldId });
 
-            var pickupGame = new PickupGame();
-            pickupGame.id = 1;
+            var pickupGame = new context.db.PickupGame();
             pickupGame.start = start;
             pickupGame.end = end;
             pickupGame.location = basketballFieldId;
-            pickupGame.host = host;
+            pickupGame.host = hostId;
 
-            console.log(pickupGame);
-
-            PickupGame.create(pickupGame, (err, pickupGame) => {
-                if (err) {
-                    throw new Error(err);
-                }
-                return pickupGame;
-            });
-
+            context.db.PickupGame.create(pickupGame);
+            return pickupGame;
         },
         updatePickupGame: (parent, args) => {
             const { id, end } = args;

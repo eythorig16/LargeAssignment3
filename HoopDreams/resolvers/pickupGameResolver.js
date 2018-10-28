@@ -39,6 +39,28 @@ module.exports = {
                     resolve(true);
                 });
             })
+        },
+        addPlayerToPickupGame: (parent, args, context) => {
+            const { playerId, pickupGameId } = args.input;
+
+            return new Promise((resolve, reject) => {
+                context.db.PickupGame.findById(pickupGameId, (err, pickupGame) => {
+                    if (err) {
+                        reject(err);
+                    }
+
+                    pickupGame.registeredPlayers.push(playerId);
+
+                    context.db.PickupGame.findByIdAndUpdate(pickupGameId,
+                        { registeredPlayers: pickupGame.registeredPlayers }, (err, pickupGame) => {
+                            if (err) {
+                                reject(err);
+                            }
+
+                            resolve(pickupGame);
+                        });
+                })
+            })
 
         }
     }

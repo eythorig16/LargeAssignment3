@@ -1,4 +1,5 @@
 const { PickupGame, Player, BasketballField } = require('../data/db');
+const service = require('../services/basketballFieldService');
 
 module.exports = {
     queries: {
@@ -25,6 +26,12 @@ module.exports = {
     mutations: {
         createPickupGame: (parent, args, context) => {
             const { start, end, basketballFieldId, hostId } = args.input;
+            var field = service.getBasketBallFieldById(basketballFieldId);
+            var host = context.db.Player.findById(hostId);
+
+            if (field == null || host == null) {
+                return new context.error.NotFoundError();
+            }
 
             var pickupGame = new context.db.PickupGame();
             pickupGame.start = start;
@@ -39,9 +46,10 @@ module.exports = {
             const { id } = args;
 
             return new Promise((resolve, reject) => {
+
                 context.db.PickupGame.findByIdAndDelete(id, (err, rem) => {
                     if (err) {
-                        resolve(false);
+                        reject(new context.error.NotFoundError());
                     }
 
                     resolve(true);
@@ -93,10 +101,10 @@ module.exports = {
                         pickupGame.registeredPlayers.splice(index, 1);
                     }
 
-                    PickupGame.findByIdAndUpdate(pickupGameId,
+                    context.db.PickupGame.findByIdAndUpdate(pickupGameId,
                         { registeredPlayers: pickupGame.registeredPlayers }, (err, pickupGame_) => {
                             if (err) {
-                                reject(new BadRequest());
+                                reject(new context.error.BadRequest());
                             }
                             resolve(pickupGame_);
                         });

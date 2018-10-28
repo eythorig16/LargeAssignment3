@@ -1,5 +1,4 @@
 const { PickupGame, Player, BasketballField } = require('../data/db');
-const service = require("../services/basketballFieldService");
 
 module.exports = {
     queries: {
@@ -27,21 +26,14 @@ module.exports = {
         createPickupGame: (parent, args, context) => {
             const { start, end, basketballFieldId, hostId } = args.input;
 
-            const game = service.getBasketBallFieldById(basketballFieldId);
-            if (game.status == "OPEN") {
+            var pickupGame = new context.db.PickupGame();
+            pickupGame.start = start;
+            pickupGame.end = end;
+            pickupGame.location = basketballFieldId;
+            pickupGame.host = hostId;
 
-                var pickupGame = new context.db.PickupGame();
-                pickupGame.start = start;
-                pickupGame.end = end;
-                pickupGame.location = basketballFieldId;
-                pickupGame.host = hostId;
-
-                context.db.PickupGame.create(pickupGame);
-                return pickupGame;
-            }
-            else {
-                throw new context.error.BasketballFieldClosedError();
-            }
+            context.db.PickupGame.create(pickupGame);
+            return pickupGame;
         },
         removePickupGame: (parent, args, context) => {
             const { id } = args;
@@ -64,17 +56,20 @@ module.exports = {
                     if (err) {
                         reject(err);
                     }
+                    if (new Date() > pickupGame.end) {
+                        reject(new context.error.PickupGameAlreadyPassedError());
+                    }
+                    else{      
+                        pickupGame.registeredPlayers.push(playerId);
+                        context.db.PickupGame.findByIdAndUpdate(pickupGameId,
+                            { registeredPlayers: pickupGame.registeredPlayers }, (err, pickupGame) => {
+                                if (err) {
+                                    reject(err);
+                                }
 
-                    pickupGame.registeredPlayers.push(playerId);
-
-                    context.db.PickupGame.findByIdAndUpdate(pickupGameId,
-                        { registeredPlayers: pickupGame.registeredPlayers }, (err, pickupGame) => {
-                            if (err) {
-                                reject(err);
-                            }
-
-                            resolve(pickupGame);
-                        });
+                                resolve(pickupGame);
+                            });
+                    }
                 })
             })
 

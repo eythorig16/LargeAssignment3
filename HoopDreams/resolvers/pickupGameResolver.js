@@ -19,7 +19,7 @@ module.exports = {
                     else {
                         resolve(game);
                     }
-                });        
+                });
             })
         }
     },
@@ -60,7 +60,7 @@ module.exports = {
                     if (new Date() > pickupGame.end) {
                         reject(new context.error.PickupGameAlreadyPassedError());
                     }
-                    else{      
+                    else {
                         pickupGame.registeredPlayers.push(playerId);
                         context.db.PickupGame.findByIdAndUpdate(pickupGameId,
                             { registeredPlayers: pickupGame.registeredPlayers }, (err, pickupGame) => {
@@ -74,6 +74,35 @@ module.exports = {
                 })
             })
 
+        },
+        removePlayerFromPickupGame: (parent, args) => {
+            const { playerId, pickupGameId } = args.input;
+
+            return new Promise((resolve, reject) => {
+                context.db.PickupGame.findById(args.input.pickupGameId, (err, pickupGame) => {
+                    if (err) {
+                        reject(new context.error.NotFoundError());
+                    } else if (game == null) {
+                        reject(new context.error.NotFoundError());
+                    } else if (new Date() > pickupGame.end) {
+                        reject(new context.error.PickupGameAlreadyPassedError());
+                    }
+
+                    var index = pickupGame.registeredPlayers.indexOf(playerId);
+
+                    if (index > -1) {
+                        pickupGame.registeredPlayers.splice(index, 1);
+                    }
+
+                    PickupGame.findByIdAndUpdate(pickupGameId,
+                        { registeredPlayers: pickupGame.registeredPlayers }, (err, pickupGame_) => {
+                            if (err) {
+                                reject(new BadRequest());
+                            }
+                            resolve(pickupGame_);
+                        });
+                });
+            });
         }
     }
 };

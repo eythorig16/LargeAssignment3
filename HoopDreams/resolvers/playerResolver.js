@@ -24,26 +24,26 @@ module.exports = {
 
 
         updatePlayer: (parent, args, context) => {
-            
+
             return new Promise((resolve, reject) => {
                 const uPlayer = context.db.Player.findOneAndUpdate(
-                    {_id:args.id},
+                    { _id: args.id },
                     {
                         $set: {
                             name: args.name
                         }
                     },
-                    {new: true}
-                    );
-                    resolve(uPlayer);
+                    { new: true }
+                );
+                resolve(uPlayer);
             })
         },
         removePlayer: (parent, args, context) => {
             return new Promise((resolve, reject) => {
                 context.db.Player.findByIdAndDelete(args.id, (err, rem) => {
-                    if(err) {
-                        reject(err);
-                    } 
+                    if (err) {
+                        resolve(false);
+                    }
                     resolve(true);
                 });
             })

@@ -28,14 +28,12 @@ module.exports = {
             return pickupGame;
         },
         removePickupGame: (parent, args, context) => {
-            console.log("here");
             const { id } = args;
-            console.log(id);
 
             return new Promise((resolve, reject) => {
                 context.db.PickupGame.findByIdAndDelete(id, (err, rem) => {
                     if (err) {
-                        reject(err);
+                        resolve(false);
                     }
 
                     resolve(true);

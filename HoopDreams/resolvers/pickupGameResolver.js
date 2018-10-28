@@ -79,32 +79,7 @@ module.exports = {
                 })
             })
         },
-        addPlayerToPickupGame: (parent, args, context) => {
-            const { playerId, pickupGameId } = args.input;
-
-            return new Promise((resolve, reject) => {
-                context.db.PickupGame.findById(pickupGameId, (err, pickupGame) => {
-                    if (err) {
-                        reject(err);
-                    }
-                    if (new Date() > pickupGame.end) {
-                        reject(new context.error.PickupGameAlreadyPassedError());
-                    }
-                    else {
-                        pickupGame.registeredPlayers.push(playerId);
-                        context.db.PickupGame.findByIdAndUpdate(pickupGameId,
-                            { registeredPlayers: pickupGame.registeredPlayers }, (err, pickupGame) => {
-                                if (err) {
-                                    reject(err);
-                                }
-
-                                resolve(pickupGame);
-                            });
-                    }
-                })
-            })
-
-        },
+       
         removePlayerFromPickupGame: (parent, args) => {
             const { playerId, pickupGameId } = args.input;
 

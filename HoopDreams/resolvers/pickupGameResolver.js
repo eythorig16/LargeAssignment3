@@ -14,7 +14,7 @@ module.exports = {
             const { id } = args;
             return new Promise((resolve, reject) => {
                 context.db.PickupGame.findById(id, (err, game) => {
-                    if(game == null || err) {
+                    if (game == null || err) {
                         reject(new context.error.NotFoundError());
                     }
                     else {
@@ -93,7 +93,7 @@ module.exports = {
                     } else if (game == null) {
                         reject(new context.error.NotFoundError());
                     } else if (new Date() > pickupGame.end) {
-                        reject(new context.error.PickupGameAlreadyPassedError());
+                        reject(new context.error.PickupGameAlreadyPassedError());   
                     }
 
                     var index = pickupGame.registeredPlayers.indexOf(playerId);

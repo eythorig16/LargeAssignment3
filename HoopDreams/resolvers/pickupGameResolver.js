@@ -10,9 +10,17 @@ module.exports = {
                 });
             });
         },
-        pickupGame: (parent, args) => {
-            const { id } = args;
-            return PickupGame.findById(id);
+        pickupGame: (parent, args, context) => {
+            return new Promise((resolve, reject) => {
+                context.db.PickupGame.findById(args.id, (err, game) => {
+                    if(game == null || err) {
+                        reject(new context.error.NotFoundError());
+                    }
+                    else {
+                        resolve(game);
+                    }
+                });        
+            })
         }
     },
     mutations: {
